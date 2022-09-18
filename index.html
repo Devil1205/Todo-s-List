@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <title>ToDo's List</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">ToDo's</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </div>
+      </nav>
+
+      <div class="container">
+        <h2 class="text-center my-4">To Do's List</h2>
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" aria-describedby="emailHelp">
+          <small id="smalltitle" class="form-text text-muted">Add an item to the list</small>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="desc" rows="3"></textarea>
+          </div>
+        <button type="submit" class="btn btn-primary" id="add">ADD to list</button>
+        <div id="items" class="my-4"><h2>Your Items</h2></div>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Sno.</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr id="trow">
+                <th scope="row">1</th>
+                <td>Machine Learning</td>
+                <td>Need to learn ML today</td>
+                <td><button class="btn btn-sm btn-primary" id="delete">Delete</button></td>
+              </tr>
+          </table>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
+    -->
+
+    <script>
+        let add=document.getElementById('add');
+        update=()=>{
+            let tbody=document.getElementById('tbody');
+            let str="";
+                locstoragestr=localStorage.getItem('locstorage');
+                locstoragearray=JSON.parse(locstoragestr);
+                locstoragearray.forEach((element,index) => {
+                    str+=  `
+                    <tbody id="tbody">
+                    <tr id="trow">
+                    <th scope="row">${index+1}</th>
+                    <td>${element[0]}</td>
+                    <td>${element[1]}</td>
+                    <td><button class="btn btn-sm btn-primary" onclick="deleted(${index})" id="delete">Delete</button></td>
+                    </tr>
+                    `
+                });
+                tbody.innerHTML=str;
+            }
+            deleted=(index)=>{
+                console.log(index);
+                console.log(locstoragearray[index]);
+                locstoragearray.splice(index,index+1);
+                localStorage.setItem('locstorage',JSON.stringify(locstoragearray));
+                update();
+            }
+            if(localStorage.length!=0)
+            update();
+        add.addEventListener("click",()=>{
+            console.log("adding now...");
+            let title=document.getElementById('title');
+            let desc=document.getElementById('desc');
+            if(localStorage.getItem('locstorage')==null)
+            {
+                var locstoragearray=[];
+                locstoragearray.push([title.value,desc.value]);
+                localStorage.setItem('locstorage',JSON.stringify(locstoragearray));
+            }
+            else
+            {
+                locstoragestr=localStorage.getItem('locstorage');
+                locstoragearray=JSON.parse(locstoragestr);
+                locstoragearray.push([title.value,desc.value]);
+                localStorage.setItem('locstorage',JSON.stringify(locstoragearray));
+            }
+                update();            
+        });
+        // let del=document.getElementById('delete');
+        // del.addEventListener("click",()=>{
+            //     console.log("deleting now...");
+        //     let title=document.getElementById('title');
+        //     let desc=document.getElementById('desc');
+        //     if(localStorage.getItem('locstorage')==null)
+        //     {
+        //         var locstoragearray=[];
+        //         locstoragearray.push([title.value,desc.value]);
+        //         localStorage.setItem('locstorage',JSON.stringify(locstoragearray));
+        //     }
+        //     else
+        //     {
+        //         locstoragestr=localStorage.getItem('locstorage');
+        //         locstoragearray=JSON.parse(locstoragestr);
+        //         locstoragearray.push([title.value,desc.value]);
+        //         localStorage.setItem('locstorage',JSON.stringify(locstoragearray));
+        //     }
+        // });
+    </script>
+  </body>
+</html>
